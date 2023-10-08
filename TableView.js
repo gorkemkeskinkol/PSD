@@ -126,8 +126,8 @@
         dropdown: function(data, name, checkbox = false){
             return `
                 <div class="relative inline-block text-left">
-                    <button data-type="${name.lower()}" type="button" class="customDropdown inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-transparent rounded-md hover:bg-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500" id="options-menu" aria-haspopup="true" aria-expanded="true">
-                        <div class="dropdown_button" data-type="${name.lower()}">${name}</div>
+                    <button data-type="${name.toLowerCase()}" type="button" class="customDropdown inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-transparent rounded-md hover:bg-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                        <div class="dropdown_button" data-type="${name.toLowerCase()}">${name}</div>
                         
                         <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M5.293 9.293a1 1 0 011.414 0L10 12.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -140,7 +140,7 @@
         dropdown_options: function(data, name, checkbox = false){
             var opts = ''
             $.each(data, function(id, value) {
-                var ident = ` data-id="${id}" data-name="${name.lower()}"`
+                var ident = ` data-id="${id}" data-name="${name.toLowerCase()}"`
                 opts += `
                     <div data-type="members" class="customDropdownContent hidden origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                         <div class="py-1" role="none">
