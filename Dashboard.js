@@ -11,9 +11,9 @@
         },
         load_scripts: function() {
             this.files.forEach(file => {
-                this.load_script(url(file))
+                this.load_script(this.url(file))
             });
-            this.load_script(url('Sidebar.js'))
+            this.load_script(this.url('Sidebar.js'))
         },
         load_script: function(url) {
             $.getScript(url)
