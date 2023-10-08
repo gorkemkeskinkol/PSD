@@ -2,7 +2,7 @@
 
 (function($) {
     var Dashboard = {
-        version: "v1.0.7",
+        version: "v1.0.8",
         files: ["TableView.js", "Sidebar.js"], // Sidebar must be at the end
         url: function(file) {
             return `https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@${this.version}/${file}?nocache=1`
