@@ -2,7 +2,7 @@
 
 (function($) {
     var Dashboard = {
-        version: "v1.0.1",
+        version: "v1.0.2",
         files: ["TableView.js"],
         url: (file) => `https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@${this.version}/${file}?nocache=1`,
         init: function(data) {
