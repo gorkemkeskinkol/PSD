@@ -9,7 +9,7 @@
         arrow: `<svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 9.293a1 1 0 011.414 0L10 12.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`,
         init: function(data) {
             this.raw_data = data
-            this.activeRole = Object.keys(raw_data['roles'])[0]
+            this.activeRole = Object.keys(this.raw_data['roles'])[0]
 
             $(document).ready(function() {
                 $(document.body).on('click', '.customDropdown', function(e) {
@@ -77,10 +77,10 @@
     
             return `
                 <div id="options" class="overflow-x-auto bg-gray-100 p-6">
-                    ${self.generate_options()}
+                    ${this.generate_options()}
                 </div>
                 <div id="body" class="overflow-x-auto bg-gray-100 p-6">
-                    ${self.generate_table()}
+                    ${this.generate_table()}
                 </div>
             `
         },
@@ -102,14 +102,14 @@
             var options = `
                 <!-- Departments input -->
                 <div class="relative m-[2px] mb-3 mr-5 float-left">
-                    ${this.dropdown(data['roles'], 'Departments')}
+                    ${this.dropdown(this.raw_data['roles'], 'Departments')}
                 </div>
-        
+
                 <!-- Members input -->
                 <div class="relative m-[2px] mb-3 mr-5 float-left">
-                    ${this.dropdown(data['roles'][Object.keys(data['roles'])[0]], 'Members', true)}
+                    ${this.dropdown(this.raw_data['roles'][Object.keys(this.raw_data['roles'])[0]], 'Members', true)}
                 </div>
-        
+
                 <!-- Date Slider -->
                 <div class="relative m-[2px] mb-3 ml-5 float-right w-[40%]">
                     ${this.slider()}
@@ -117,11 +117,11 @@
             `;
 
             return this.post_process(options, () => {
-                $('.dropdown_button[data-type="departments"]').text(activeRole);
-                $('.dropdown_button[data-type="members"]').text(`Members(${selectedMembers.length})`);
-    
-                this.slider_init()
-            })
+                $('.dropdown_button[data-type="departments"]').text(this.activeRole);
+                $('.dropdown_button[data-type="members"]').text(`Members(${this.selectedMembers.length})`);
+        
+                this.slider_init();
+            });
         },
         dropdown: function(data, name, checkbox = false){
             return `
@@ -165,9 +165,9 @@
         getSliderStep: function() {
             var range = [];
             $.each(this.raw_data['years'], function(key_year, year) {
-              $.each(this.raw_data['months'], function(key_month, month) {
-                range.push(`${year}/${month}`);
-              });
+                $.each(this.raw_data['months'], function(key_month, month) {
+                    range.push(`${year}/${month}`);
+                });
             });
             return range;
         },
@@ -338,7 +338,7 @@
         rows: function() {
             var self = this;
             var rows = '';
-            var transformedData = this.transformData(data)
+            var transformedData = this.transformData(this.raw_data);
 
             $.each(transformedData, function(year, monthData) {
                 var yearAverages = [];
