@@ -163,9 +163,10 @@
             `
         },
         getSliderSteps: function() {
+            var self = this;
             var range = [];
-            $.each(this.raw_data['years'], function(key_year, year) {
-                $.each(this.raw_data['months'], function(key_month, month) {
+            $.each(self.raw_data['years'], function(key_year, year) {
+                $.each(self.raw_data['months'], function(key_month, month) {
                     range.push(`${year}/${month}`);
                 });
             });
