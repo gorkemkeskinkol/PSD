@@ -2,9 +2,11 @@
 
 (function($) {
     var Dashboard = {
-        version: "v1.0.4",
+        version: "v1.0.5",
         files: ["TableView.js"],
-        url: (file) => `https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@${this.version}/${file}?nocache=1`,
+        url: function(file) {
+            return `https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@${this.version}/${file}?nocache=1`
+        },
         init: function(data) {
             this.load_scripts()
             $('#main_wrapper').html(Sidebar.init(data))
