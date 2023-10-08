@@ -45,8 +45,9 @@
             `
         },
         sections: function() {
+            var self = this;
             var sections = ''
-            $.each(this.structure, function(section, content) {
+            $.each(self.structure, function(section, content) {
                 sections += `
                     <li data-type="section" data-section="${section}" class="px-5">
                         <div class="flex flex-row items-center h-8">
@@ -56,13 +57,14 @@
                             </svg>
                         </div>
                     </li>
-                    ${this.buttons(section)}
+                    ${self.buttons(section)}
                 `
             })
         },
         buttons: function(section) {
+            var self = this;
             var buttons = ''
-            $.each(this.structure[section], function(index, content) {
+            $.each(self.structure[section], function(index, content) {
                 buttons += `
                     <li data-type="button" data-section="${section}">
                         <a href="#" class="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
