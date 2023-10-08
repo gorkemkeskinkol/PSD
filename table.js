@@ -85,7 +85,7 @@
             return outputData;
         },
         subtitles: function() {
-            subtitle = ''
+            var subtitle = ''
             for (let i = 0; i < selectedMembers.length; i++) {
                 subtitle += this.row_cell(
                     ['Game', 'ECPI', 'Retention', 'Playtime'],
@@ -226,7 +226,7 @@
             return rows;
         }
     }
-    
+
     window.Table = Table;
 
 })(jQuery);
