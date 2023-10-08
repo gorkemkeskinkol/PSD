@@ -3,24 +3,24 @@
 (function($) {
     var Dashboard = {
         version: "v1.0.7",
-        files: ["TableView.js", "Sidebar.js"],
+        files: ["TableView.js", "Sidebar.js"], // Sidebar must be at the end
         url: function(file) {
             return `https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@${this.version}/${file}?nocache=1`
         },
         init: function(data) {
-            this.load_scripts(() => {
+            this.load_scripts(0, () => {
                 $('#main_wrapper').html(Sidebar.init(data));
             });
         },
-        load_scripts: function(callback) {
-            let loadedCount = 0;
-            this.files.forEach(file => {
-                this.load_script(this.url(file), file, () => {
-                    loadedCount++;
-                    if (loadedCount === this.files.length) {
-                        callback();
-                    }
-                });
+        load_scripts: function(index, callback) {
+            if (index >= this.files.length) {
+                callback();
+                return;
+            }
+
+            const file = this.files[index];
+            this.load_script(this.url(file), file, () => {
+                this.load_scripts(index + 1, callback);
             });
         },
         load_script: function(url, file, onSuccess) {
