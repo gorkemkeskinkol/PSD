@@ -26,12 +26,15 @@
                 });
             });
 
+            var firstKey = Object.keys(this.structure)[0];
+            var firstValue = this.structure[firstKey];
+
             return `
                 <div id="sidebar" class="transition-all duration-500 ease-in-out z-50 fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r -ml-64">
                     ${this.generate()}
                 </div>
                 <div id="view" class="overflow-x-auto bg-gray-100 p-6">
-                    ${this.structure.first()[0][2].init(data)}
+                    ${firstValue[0][2].init(data)}
                 </div>
             `
         },
