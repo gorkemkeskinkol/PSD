@@ -226,4 +226,7 @@
             return rows;
         }
     }
-})
+    
+    window.Table = Table;
+
+})(jQuery);
