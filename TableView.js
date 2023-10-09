@@ -205,19 +205,19 @@
             return range;
         },
         generate_table: function() {
-            var table = this.single('table', 'class="min-w-full text-left text-sm whitespace-nowrap"', 
-                this.merge([
-                    this.single('thead', 'class="uppercase tracking-wider border-b-2"', 
-                    this.merge([
-                        this.single('tr', '', 
-                            this.multi('th', 'scope="col" class="px-3 text-xl"', this.settings['Members'])
+            var table = Dom.single('table', 'class="min-w-full text-left text-sm whitespace-nowrap"', 
+                Dom.merge([
+                    Dom.single('thead', 'class="uppercase tracking-wider border-b-2"', 
+                    Dom.merge([
+                        Dom.single('tr', '', 
+                            Dom.multi('th', 'scope="col" class="px-3 text-xl"', this.settings['Members'])
                         ),
-                        this.single('tr', '', 
+                        Dom.single('tr', '', 
                             this.subtitles()
                         ),
                     ])
                     ),
-                    this.single('tbody', 'data-id="rows" class="uppercase tracking-wider border-b-2"', 
+                    Dom.single('tbody', 'data-id="rows" class="uppercase tracking-wider border-b-2"', 
                         this.rows()
                     )
                 ])
@@ -241,21 +241,6 @@
             var info = '<svg xmlns="http://www.w3.org/2000/svg" class="ml-2" x="0px" y="0px" width="15" height="15" viewBox="0 0 30 30"><path fill="currentColor" d="M15,3C8.373,3,3,8.373,3,15c0,6.627,5.373,12,12,12s12-5.373,12-12C27,8.373,21.627,3,15,3z M16,21h-2v-7h2V21z M15,11.5 c-0.828,0-1.5-0.672-1.5-1.5s0.672-1.5,1.5-1.5s1.5,0.672,1.5,1.5S15.828,11.5,15,11.5z"></path></svg>';
             neu[0] = `${neu[0]}${info}`;
             return valid ? p : neu;
-        },
-        single: (type, attrs, content) => `<${type} ${attrs}>${content}</${type}>`,
-        multi: (type, attrs, data) => {
-            var pack = ''
-            $.each(data, function(key, name) {
-            pack += `<${type} ${attrs}>${name}</${type}>`
-            })
-            return pack
-        },
-        merge: (sections) => {
-            var pack = ''
-            $.each(sections, function(key, name) {
-                pack += `${name}`
-            })
-            return pack
         },
         transformData: (inputData) => {
             let outputData = {};
@@ -314,16 +299,16 @@
                 ['td', 'class="basis-1/4 text-sm text-center align-middle"']
             ]
         ) {
-            return this.single('td', 'class="px-3 py-2"', 
-                this.single('table', 'class="w-full"', 
-                    this.single('tbody', 'class="w-full"', 
-                        this.merge([
-                            this.single('tr', 'class="w-full flex flex-row"', 
-                                this.merge([
-                                    this.single(setup[0][0], setup[0][1], d[0]),
-                                    this.single(setup[1][0], setup[1][1], isNaN(d[1]) || d[1] == '' ? d[1] : parseFloat(d[1]).toFixed(2)),
-                                    this.single(setup[2][0], setup[2][1], isNaN(d[2]) || d[1] == '' ? d[2] : parseFloat(d[2]).toFixed(2)),
-                                    this.single(setup[3][0], setup[3][1], isNaN(d[3]) || d[1] == '' ? d[3] : parseFloat(d[3]).toFixed(2))
+            return Dom.single('td', 'class="px-3 py-2"', 
+                Dom.single('table', 'class="w-full"', 
+                    Dom.single('tbody', 'class="w-full"', 
+                        Dom.merge([
+                            Dom.single('tr', 'class="w-full flex flex-row"', 
+                                Dom.merge([
+                                    Dom.single(setup[0][0], setup[0][1], d[0]),
+                                    Dom.single(setup[1][0], setup[1][1], isNaN(d[1]) || d[1] == '' ? d[1] : parseFloat(d[1]).toFixed(2)),
+                                    Dom.single(setup[2][0], setup[2][1], isNaN(d[2]) || d[1] == '' ? d[2] : parseFloat(d[2]).toFixed(2)),
+                                    Dom.single(setup[3][0], setup[3][1], isNaN(d[3]) || d[1] == '' ? d[3] : parseFloat(d[3]).toFixed(2))
                                 ])
                             )
                         ])
@@ -414,7 +399,7 @@
                         if (empty) { 
                             rowDone = true
                         }else{
-                            rows += self.single('tr', `data-id="row" data-year="${year}" data-month="${month}" data-type="game" class="transition-all duration-500 ease-in-out border-b"`, row)
+                            rows += Dom.single('tr', `data-id="row" data-year="${year}" data-month="${month}" data-type="game" class="transition-all duration-500 ease-in-out border-b"`, row)
                             i_row++
                         }
                     }
@@ -435,7 +420,7 @@
                                 ['th', 'class="basis-1/4 text-sm text-center align-middle"']
                             ])
                     }
-                    rows += self.single('tr', `data-id="row" data-year="${year}" data-month="${month}" data-type="month" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-200"`, row)
+                    rows += Dom.single('tr', `data-id="row" data-year="${year}" data-month="${month}" data-type="month" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-200"`, row)
                 });
                 var row = ''
                 for(var i = 0; i < self.settings['Members'].length; i++){
@@ -449,7 +434,7 @@
                             ['th', 'class="basis-1/4 text-sm text-center align-middle"']
                         ])
                 }
-                rows += self.single('tr', `data-id="row" data-year="${year}" data-type="year" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-300"`, row)
+                rows += Dom.single('tr', `data-id="row" data-year="${year}" data-type="year" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-300"`, row)
             })
             return rows;
         }
