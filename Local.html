@@ -7,7 +7,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@v1.0.9/Dashboard.js?nocache=1"></script> -->
+        <script src="Slider.js"></script>
+        <script src="TableView.js"></script>
+        <script src="Sidebar.js"></script>
         <style>
             body {
                 margin: 0; /* Kenarlardaki boşlukları kaldır */
@@ -224,47 +226,9 @@
                         "PM": {}
                     }
                 }
-            
-            var Dashboard = {
-                version: "v1.0.15",
-                files: ["TableView.js", "Sidebar.js"], // Sidebar must be at the end
-                url: function(file) {
-                    return `https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@${this.version}/${file}?nocache=1`
-                },
-                init: function(data) {
-                    this.load_scripts(0, () => {
-                        $('#main_wrapper').html(Sidebar.init(data));
-                    });
-                },
-                load_scripts: function(index, callback) {
-                    if (index >= this.files.length) {
-                        callback();
-                        return;
-                    }
 
-                    const file = this.files[index];
-                    this.load_script(this.url(file), file, () => {
-                        this.load_scripts(index + 1, callback);
-                    });
-                },
-                load_script: function(url, file, onSuccess) {
-                    $.getScript(url)
-                        .done((script, textStatus) => {
-                            console.log(`${file} loaded.`);
-                            onSuccess();
-                        })
-                        .fail((jqxhr, settings, exception) => {
-                            console.error(`An error occured while loading ${file}: ${exception}`);
-                        });
-                }
-            }
-
-            Dashboard.init(data)
+            $('#main_wrapper').html(Sidebar.init(data));
             
-            function setSysData(sys_data) {
-                // Dashboard.init(data)
-                console.log('data', data)
-            }
         </script>
     </body>
 </html>

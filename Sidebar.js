@@ -63,6 +63,7 @@
                     ${self.buttons(section)}
                 `
             })
+            return sections
         },
         buttons: function(section) {
             var self = this;
@@ -77,6 +78,7 @@
                     </li>
                 `
             })
+            return buttons
         }
     }
 
