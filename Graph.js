@@ -35,7 +35,8 @@
                 
                         new Chart(ctx, {
                             type: 'line',
-                            data: entry[1]
+                            data: entry[1],
+                            options: entry[2]
                         });
 
                         self.data.splice(index, 1);

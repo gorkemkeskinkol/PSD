@@ -127,7 +127,7 @@
         },
         getMonthName: function(monthIndex) {
             var monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
-            return monthNames[monthIndex-1];
+            return monthNames[monthIndex];
         },
         post_process: function(content, func) {
             if($('#temp').length === 0){
@@ -180,7 +180,7 @@
                         </svg>
                     </button>
                 </div>
-                <div data-bind="${guide.name}" data-checkbox="${guide.checkbox}" class="customDropdownContent hidden origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                <div data-bind="${guide.name}" data-checkbox="${guide.checkbox}" style="z-index: 50;" class="customDropdownContent hidden origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                     ${this.dropdown_options(guide.data, guide.name, guide.checkbox)}
                 </div>
             `
@@ -215,14 +215,12 @@
             return range;
         },
         generate_table: function() {
-            return Dom.single('table', 'class="min-w-full text-left text-sm whitespace-nowrap"', 
+            return Dom.single('div', 'class="flex flex-col flex-grow bg-gray-100"', 
                 Dom.merge([
-                    Dom.single('thead', 'class="uppercase tracking-wider border-b-2"', 
-                        Dom.single('tr', '', 
-                            Dom.multi('th', 'scope="col" class="px-3 text-xl"', this.settings['Members'])
-                        )
+                    Dom.single('div', 'class="uppercase tracking-wider border-b-2 flex"', 
+                        Dom.multi('div', 'class="flex-1 px-3 text-xl font-black"', this.settings['Members'])
                     ),
-                    Dom.single('tbody', 'data-id="rows" class="uppercase tracking-wider border-b-2"', this.rows())
+                    Dom.single('div', 'data-id="rows" class="uppercase tracking-wider border-b-2 flex flex-col"', this.rows())
                 ])
             );
         },
@@ -272,16 +270,15 @@
             return subtitle
         },
         row: function(data) {
-            var content = ''
+            var content = '';
             for (let i = 0; i < this.settings['Members'].length; i++) {
                 if(Array.isArray(data)){
-                    content += Dom.single('th', 'class="px-3 py-2"', Graph.init());
+                    content += Dom.single('div', 'class="flex-1 px-3 py-2"', Graph.init());
                 } else {
-                    content += Dom.single('th', 'class="px-3 py-2"', data); // Eğer "title" yerine "data" kullanmak istiyorsanız bu şekilde değiştirebilirsiniz.
+                    content += Dom.single('div', 'class="flex-1 px-3 py-2 font-medium"', data);
                 }
             }
-            return Dom.single('tr', `data-id="row" data-type="month" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-200"`, content);
-        
+            return Dom.single('div', 'class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-200 flex"', content);
         },
         extractData: function(kpi) {
             const self = this;
@@ -315,12 +312,14 @@
                                             let totalValueForMonth = 0;
                                             let gameCountForMonth = 0;
                                             $.each(games, function(index, gameData) {
-                                                const kpi_index = kpi_map.indexOf(kpi)
+                                                const kpi_index = kpi_map.indexOf(kpi);
                                                 const kpiValue = gameData[kpi_index];
-                                                totalValueForMonth += kpiValue;
-                                                gameCountForMonth++;
+                                                if (typeof kpiValue === "number" && !isNaN(kpiValue)) {
+                                                    totalValueForMonth += kpiValue;
+                                                    gameCountForMonth++;
+                                                }
                                             });
-                                            const averageValueForMonth = totalValueForMonth / gameCountForMonth; // Ortalamayı hesapla
+                                            const averageValueForMonth = totalValueForMonth / gameCountForMonth;
                                             extractedData.push({
                                                 month: self.getMonthName(month),
                                                 year: year,
@@ -360,10 +359,21 @@
                 let memberData = {
                     label: memberName,
                     data: [],
-                    borderColor: memberName === focusedMember ? 'green' : 'grey',
+                    borderColor: memberName === focusedMember ? 'green' : '#d3d3d3',
                     fill: false
                 };
-        
+                
+                labels.sort((a, b) => {
+                    const [monthA, yearA] = a.split(" ");
+                    const [monthB, yearB] = b.split(" ");
+                    if (yearA !== yearB) {
+                        return parseInt(yearA) - parseInt(yearB);
+                    } else {
+                        const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+                        return monthNames.indexOf(monthA) - monthNames.indexOf(monthB);
+                    }
+                });
+
                 labels.forEach(label => {
                     const monthData = extractedData.find(data => `${data.month} ${data.year}` === label && data.member === memberName);
                     memberData.data.push(monthData ? monthData.value : null);
@@ -380,40 +390,58 @@
         rows: function() {
             const self = this;
             const display = ['Playtime', 'Retention', 'ECPI']
-            var rows = '';
-
-
-            var startDate, endDate;
-            if (this.settings['date_range'] && this.settings['date_range'].length >= 2) {
-                startDate = this.convertToDate(this.settings['date_range'][0]);
-                endDate = this.convertToDate(this.settings['date_range'][1]);
-            } else {
-                // Varsayılan tarih aralığı değerlerini belirleyin
-                startDate = new Date(2019, 0, 1); // 2019 Ocak
-                endDate = new Date(2023, 11, 31); // 2023 Aralık
+            const setting = {
+                'Playtime': {
+                    limit: 1200
+                },
+                'Retention': {
+                    limit: 45
+                },
+                'ECPI': {
+                    limit: 0.6
+                }
             }
-
-
-            $.each(display, function(i, kpi) {
-                rows += self.row(kpi)
-                var row = ''
+            var rows = '';
+        
+            display.forEach(kpi => {
+                rows += self.row(kpi);
+                var row = '';
                 self.settings['Members'].forEach(member => {
                     const timestamp = (Math.random() + performance.now()).toString();
                     const encoder = new TextEncoder();
                     const uint8Array = encoder.encode(timestamp);
                     const base64Encoded = btoa(String.fromCharCode.apply(null, uint8Array));
-
+        
                     const extractedData = self.extractData(kpi);
-                    // console.log('extractedData', extractedData)
                     const dataForGraph = self.transformDataForGraph(extractedData, member);
-                    console.log('dataForGraph', JSON.stringify(dataForGraph))
-                    // row += Dom.single('td', 'class="relative px-3 py-2"', `${member} ${base64Encoded}`)
-                    row += Dom.single('td', 'class="relative px-3 py-2"', `<canvas class="graph_container flex-auto" data-id="${base64Encoded}"></canvas>`)
-                    Graph.queue([base64Encoded, dataForGraph])
-                })
-                rows += Dom.single('tr', 'class="h-64"', row);
-            })
-            // console.log('rows', rows)
+                    row += Dom.single('div', 'class="relative px-3 py-2 flex-grow"', `<canvas style="width: 100%; height: 100%;" class="graph_container flex-auto" data-id="${base64Encoded}"></canvas>`);
+                    Graph.queue([base64Encoded, dataForGraph, {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: (ctx) => 'Point Style: ' + ctx.chart.data.datasets[0].pointStyle,
+                            },
+                            annotation: {
+                                annotations: {
+                                    line1: {
+                                        type: 'line',
+                                        yMin: setting[kpi].limit,
+                                        yMax: setting[kpi].limit,
+                                        borderColor: 'red',
+                                        borderWidth: 2,
+                                        label: {
+                                            enabled: false,
+                                            content: 'Hedef'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }])
+                });
+                rows += Dom.single('div', 'class="h-64 flex"', row);
+            });
             return rows;
         }
     }
