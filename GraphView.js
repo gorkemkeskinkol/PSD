@@ -6,6 +6,7 @@
         settings: {},
         arrow: `<svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 9.293a1 1 0 011.414 0L10 12.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`,
         init: function(data) {
+            // console.log(JSON.stringify(data))
             var self = this
             this.raw_data = data
             
@@ -97,6 +98,11 @@
                             data: Object.keys(this.raw_data['roles'][Object.keys(this.raw_data['roles'])[0]]),
                             checkbox: true
                         } ],
+                        [ 'Dropdown', {
+                            name: 'Display',
+                            data: ["Month", "Year"],
+                            checkbox: false
+                        } ],
                         [ 'Slider', 'Range Slider', this.getSliderSteps()]
                     ])}
                 </div>
@@ -118,6 +124,10 @@
         getMonthIndex: function(monthName) {
             var monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
             return monthNames.indexOf(monthName);
+        },
+        getMonthName: function(monthIndex) {
+            var monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+            return monthNames[monthIndex-1];
         },
         post_process: function(content, func) {
             if($('#temp').length === 0){
@@ -205,29 +215,16 @@
             return range;
         },
         generate_table: function() {
-            var table = Dom.single('table', 'class="min-w-full text-left text-sm whitespace-nowrap"', 
+            return Dom.single('table', 'class="min-w-full text-left text-sm whitespace-nowrap"', 
                 Dom.merge([
                     Dom.single('thead', 'class="uppercase tracking-wider border-b-2"', 
-                    Dom.merge([
                         Dom.single('tr', '', 
                             Dom.multi('th', 'scope="col" class="px-3 text-xl"', this.settings['Members'])
-                        ),
-                        Dom.single('tr', '', 
-                            this.subtitles()
-                        ),
-                    ])
+                        )
                     ),
-                    Dom.single('tbody', 'data-id="rows" class="uppercase tracking-wider border-b-2"', 
-                        this.rows()
-                    )
+                    Dom.single('tbody', 'data-id="rows" class="uppercase tracking-wider border-b-2"', this.rows())
                 ])
-            )
-
-            return this.post_process(table, () => {
-                var rows = $('tr[data-id="row"]').get();
-                rows.reverse();
-                $('tbody[data-id="rows"]').empty().append(rows)
-            })
+            );
         },
         validate_entry: (p) => {
             var valid = true;
@@ -242,36 +239,20 @@
             neu[0] = `${neu[0]}${info}`;
             return valid ? p : neu;
         },
-        transformData: (inputData) => {
-            let outputData = {};
-
-            for (let role in inputData.roles) {
-                for (let member in inputData.roles[role]) {
-                    for (let year in inputData.roles[role][member]) {
-                        if (!outputData[year]) {
-                            outputData[year] = {};
-                        }
-                        for (let month in inputData.roles[role][member][year]) {
-                            if (!outputData[year][month]) {
-                                outputData[year][month] = {};
-                            }
-                            if (!outputData[year][month][member]) {
-                                outputData[year][month][member] = [];
-                            }
-
-                            inputData.roles[role][member][year][month].forEach(gameData => {
-                                // Aynı oyun verisinin zaten eklenip eklenmediğini kontrol ediyoruz
-                                let isDuplicate = outputData[year][month][member].some(existingGameData => 
-                                    JSON.stringify(existingGameData) === JSON.stringify(gameData)
-                                );
-
-                                if (!isDuplicate) {
-                                    outputData[year][month][member].push(gameData);
-                                }
-                            });
-                        }
-                    }
-                }
+        transformData: (inputData, title) => {
+            var outputData = ''
+            switch (title) {
+                case 'ECPI':
+                    
+                    break;
+                case 'Retention':
+                    
+                    break;
+                case 'Playtime':
+                    
+                    break;
+                default:
+                    break;
             }
 
             return outputData;
@@ -290,36 +271,117 @@
             }
             return subtitle
         },
-        row_cell: function(
-            d, 
-            setup = [
-                ['th', 'class="basis-1/2 text-xs align-middle flex flex-row"'],
-                ['td', 'class="basis-1/4 text-sm text-center align-middle"'],
-                ['td', 'class="basis-1/4 text-sm text-center align-middle"'],
-                ['td', 'class="basis-1/4 text-sm text-center align-middle"']
-            ]
-        ) {
-            return Dom.single('td', 'class="px-3 py-2"', 
-                Dom.single('table', 'class="w-full"', 
-                    Dom.single('tbody', 'class="w-full"', 
-                        Dom.merge([
-                            Dom.single('tr', 'class="w-full flex flex-row"', 
-                                Dom.merge([
-                                    Dom.single(setup[0][0], setup[0][1], d[0]),
-                                    Dom.single(setup[1][0], setup[1][1], isNaN(d[1]) || d[1] == '' ? d[1] : parseFloat(d[1]).toFixed(2)),
-                                    Dom.single(setup[2][0], setup[2][1], isNaN(d[2]) || d[1] == '' ? d[2] : parseFloat(d[2]).toFixed(2)),
-                                    Dom.single(setup[3][0], setup[3][1], isNaN(d[3]) || d[1] == '' ? d[3] : parseFloat(d[3]).toFixed(2))
-                                ])
-                            )
-                        ])
-                    )
-                )
-            )
-        },  
+        row: function(data) {
+            var content = ''
+            for (let i = 0; i < this.settings['Members'].length; i++) {
+                if(Array.isArray(data)){
+                    content += Dom.single('th', 'class="px-3 py-2"', Graph.init());
+                } else {
+                    content += Dom.single('th', 'class="px-3 py-2"', data); // Eğer "title" yerine "data" kullanmak istiyorsanız bu şekilde değiştirebilirsiniz.
+                }
+            }
+            return Dom.single('tr', `data-id="row" data-type="month" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-200"`, content);
+        
+        },
+        extractData: function(kpi) {
+            const self = this;
+            const kpi_map = ['Game', 'ECPI', 'Retention', 'Playtime']
+            const dept = self.settings['Departments'];
+            const dateRange = self.settings['Range Slider'];
+            const selectedMembers = self.settings['Members'];
+            const mode = self.settings['Display'];
+            const deptData = self.raw_data['roles'][dept];
+            let extractedData = [];
+        
+            // Tarihleri ayırma ve dönüştürme
+            const startParts = dateRange[0].split('/');
+            const endParts = dateRange[1].split('/');
+            const startYear = parseInt(startParts[0]);
+            const startMonth = self.getMonthIndex(startParts[1]) + 1; // Ayı sayıya dönüştürme
+            const endYear = parseInt(endParts[0]);
+            const endMonth = self.getMonthIndex(endParts[1]) + 1;
+        
+            switch (mode) {
+                case "Month":
+                    $.each(deptData, function(memberName, years) {
+                        if (jQuery.inArray(memberName, selectedMembers) !== -1) {
+                            $.each(years, function(year, months) {
+                                year = parseInt(year)
+                                if (year >= startYear && year <= endYear) {
+                                    $.each(months, function(month, games) {
+                                        month = self.getMonthIndex(month)
+                                        // Ay kontrolü
+                                        if ((year == startYear && month >= startMonth) || (year == endYear && month <= endMonth) || (year > startYear && year < endYear)) {
+                                            let totalValueForMonth = 0;
+                                            let gameCountForMonth = 0;
+                                            $.each(games, function(index, gameData) {
+                                                const kpi_index = kpi_map.indexOf(kpi)
+                                                const kpiValue = gameData[kpi_index];
+                                                totalValueForMonth += kpiValue;
+                                                gameCountForMonth++;
+                                            });
+                                            const averageValueForMonth = totalValueForMonth / gameCountForMonth; // Ortalamayı hesapla
+                                            extractedData.push({
+                                                month: self.getMonthName(month),
+                                                year: year,
+                                                value: averageValueForMonth,
+                                                member: memberName
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    break;
+        
+                case "Year":
+                    // ...
+                    break;
+            }
+        
+            return extractedData;
+        },
+        transformDataForGraph: function(extractedData, focusedMember) {
+            const self = this;
+            let labels = []; // Ayların isimleri
+            let datasets = [];
+        
+            // Ayların isimlerini belirle
+            extractedData.forEach(data => {
+                const monthLabel = `${data.month} ${data.year}`;
+                if (labels.indexOf(monthLabel) === -1) {
+                    labels.push(monthLabel);
+                }
+            });
+        
+            // Her bir personel için dataset oluştur
+            self.settings['Members'].forEach(memberName => {
+                let memberData = {
+                    label: memberName,
+                    data: [],
+                    borderColor: memberName === focusedMember ? 'green' : 'grey',
+                    fill: false
+                };
+        
+                labels.forEach(label => {
+                    const monthData = extractedData.find(data => `${data.month} ${data.year}` === label && data.member === memberName);
+                    memberData.data.push(monthData ? monthData.value : null);
+                });
+        
+                datasets.push(memberData);
+            });
+        
+            return {
+                labels: labels,
+                datasets: datasets
+            };
+        },        
         rows: function() {
-            var self = this;
+            const self = this;
+            const display = ['Playtime', 'Retention', 'ECPI']
             var rows = '';
-            var transformedData = this.transformData(this.raw_data);
+
 
             var startDate, endDate;
             if (this.settings['date_range'] && this.settings['date_range'].length >= 2) {
@@ -332,110 +394,26 @@
             }
 
 
-            $.each(transformedData, function(year, monthData) {
-                if (year < startDate.getFullYear() || year > endDate.getFullYear()) {
-                    return true;
-                }
-
-                var yearAverages = [];
-                var yearTotal = [];
-                var yearGameCount = [];
-
-                for(var i = 0; i < self.settings['Members'].length; i++){
-                    yearAverages[i] = [];
-                    yearTotal[i] = [0, 0, 0]
-                    yearGameCount[i] = 0
-                }
-
-                $.each(monthData, function(month, memberData) {
-                    var monthIndex = self.getMonthIndex(month);
-                    if ((year == startDate.getFullYear() && monthIndex < startDate.getMonth()) || 
-                        (year == endDate.getFullYear() && monthIndex > endDate.getMonth())) {
-                        return true;
-                    }
-                    
-                    var monthAverages = [];
-                    var monthTotal = [];
-                    var monthGameCount = [];
-
-                    for(var i = 0; i < self.settings['Members'].length; i++){
-                        monthAverages[i] = [];
-                        monthTotal[i] = [0, 0, 0]
-                        monthGameCount[i] = 0
-                    }
-
-                    var i_row = 0
-                    var rowDone = false
-                    
-                    while(!rowDone){
-                        var empty = true
-                        var row = ''
-                        for(var i = 0; i < self.settings['Members'].length; i++){
-                            if (memberData[self.settings['Members'][i]] && memberData[self.settings['Members'][i]][i_row]) {
-                                var game = memberData[self.settings['Members'][i]][i_row]
-                                var valid_entry = self.validate_entry(game)
-                                if (game == valid_entry) {
-                                    monthTotal[i][0] += parseFloat(game[1]);
-                                    monthTotal[i][1] += parseFloat(game[2]);
-                                    monthTotal[i][2] += parseFloat(game[3]);
-                                    monthGameCount[i]++;
-                                    row += self.row_cell(game)
-                                    empty = false
-                                }else{
-                                    row += self.row_cell(
-                                        valid_entry,
-                                        [
-                                            ['th', 'class="text-gray-300 basis-1/2 text-xs align-middle flex flex-row"'],
-                                            ['td', 'class="text-gray-300 basis-1/4 text-sm text-center align-middle"'],
-                                            ['td', 'class="text-gray-300 basis-1/4 text-sm text-center align-middle"'],
-                                            ['td', 'class="text-gray-300 basis-1/4 text-sm text-center align-middle"']
-                                        ]
-                                    )
-                                }
-                            }else{
-                                row += self.row_cell(['','','',''])
-                            }
-                        }
-                        if (empty) { 
-                            rowDone = true
-                        }else{
-                            rows += Dom.single('tr', `data-id="row" data-year="${year}" data-month="${month}" data-type="game" class="transition-all duration-500 ease-in-out border-b"`, row)
-                            i_row++
-                        }
-                    }
-                    var row = ''
-                    for(var i = 0; i < self.settings['Members'].length; i++){
-                        monthAverages[i] = monthGameCount[i] > 0 ? [monthTotal[i][0] / monthGameCount[i], monthTotal[i][1] / monthGameCount[i], monthTotal[i][2] / monthGameCount[i]] : ['', '', ''];
-                        yearTotal[i][0] += monthTotal[i][0];
-                        yearTotal[i][1] += monthTotal[i][1];
-                        yearTotal[i][2] += monthTotal[i][2];
-                        yearGameCount[i] += monthGameCount[i];
-                        
-                        row += self.row_cell(
-                            [`${month}(${monthGameCount[i]})${self.arrow}`, monthAverages[i][0], monthAverages[i][1], monthAverages[i][2]],
-                            [
-                                ['th', 'class="basis-1/2 text-sm align-middle flex flex-row"'],
-                                ['th', 'class="basis-1/4 text-sm text-center align-middle"'],
-                                ['th', 'class="basis-1/4 text-sm text-center align-middle"'],
-                                ['th', 'class="basis-1/4 text-sm text-center align-middle"']
-                            ])
-                    }
-                    rows += Dom.single('tr', `data-id="row" data-year="${year}" data-month="${month}" data-type="month" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-200"`, row)
-                });
+            $.each(display, function(i, kpi) {
+                rows += self.row(kpi)
                 var row = ''
-                for(var i = 0; i < self.settings['Members'].length; i++){
-                    yearAverages[i] = yearGameCount[i] > 0 ? [yearTotal[i][0] / yearGameCount[i], yearTotal[i][1] / yearGameCount[i], yearTotal[i][2] / yearGameCount[i]] : ['', '', ''];
-                    row += self.row_cell(
-                        [`${year}(${yearGameCount[i]})${self.arrow}`, yearAverages[i][0], yearAverages[i][1], yearAverages[i][2]],
-                        [
-                            ['th', 'class="basis-1/2 text-sm align-middle flex flex-row"'],
-                            ['th', 'class="basis-1/4 text-sm text-center align-middle"'],
-                            ['th', 'class="basis-1/4 text-sm text-center align-middle"'],
-                            ['th', 'class="basis-1/4 text-sm text-center align-middle"']
-                        ])
-                }
-                rows += Dom.single('tr', `data-id="row" data-year="${year}" data-type="year" class="transition-all duration-500 ease-in-out cursor-pointer border-b bg-gray-300"`, row)
+                self.settings['Members'].forEach(member => {
+                    const timestamp = (Math.random() + performance.now()).toString();
+                    const encoder = new TextEncoder();
+                    const uint8Array = encoder.encode(timestamp);
+                    const base64Encoded = btoa(String.fromCharCode.apply(null, uint8Array));
+
+                    const extractedData = self.extractData(kpi);
+                    // console.log('extractedData', extractedData)
+                    const dataForGraph = self.transformDataForGraph(extractedData, member);
+                    console.log('dataForGraph', JSON.stringify(dataForGraph))
+                    // row += Dom.single('td', 'class="relative px-3 py-2"', `${member} ${base64Encoded}`)
+                    row += Dom.single('td', 'class="relative px-3 py-2"', `<canvas class="graph_container flex-auto" data-id="${base64Encoded}"></canvas>`)
+                    Graph.queue([base64Encoded, dataForGraph])
+                })
+                rows += Dom.single('tr', 'class="h-64"', row);
             })
+            // console.log('rows', rows)
             return rows;
         }
     }

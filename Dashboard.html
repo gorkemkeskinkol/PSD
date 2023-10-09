@@ -7,13 +7,14 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
     <body>
         <div id="main_wrapper" class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800"></div>
         <script>
             var Dashboard = {
                 version: "v1.0.18",
-                files: ["Dom", "Slider", "TableView", "GraphView", "Sidebar"], // Sidebar must be at the end
+                files: ["Dom", "Slider", "TableView", "Graph", "GraphView", "Sidebar"], // Sidebar must be at the end
                 url: function(file) {
                     return 'https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@' + this.version + '/' + file + '.js?nocache=1'
                 },
