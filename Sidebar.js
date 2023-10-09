@@ -6,14 +6,19 @@
         structure: {
             'Performance': [
                 ['fa-table', 'Table View', TableView],
-                ['fa-chart-line', 'Graph View', null]
+                ['fa-chart-line', 'Graph View', GraphView]
             ],
             'Production': [
                 ['fa-stream', 'Timeline View', null]
             ]
         },
         init: function(data) {
+            const self = this
             $(document).ready(function() {
+                $(document.body).on('click', '#sidebar li[data-type="button"]', function(e) {
+                    const view = self.structure[$(this).data('section')][$(this).data('id')][2]
+                    $('#view').empty().html(view.init(data))
+                });
                 $(document).mousemove(function(event) {
                   var limit = this.expanded ? 500 : 25;
                   if (event.pageX < limit) {
@@ -70,7 +75,7 @@
             var buttons = ''
             $.each(self.structure[section], function(index, content) {
                 buttons += `
-                    <li data-type="button" data-section="${section}">
+                    <li data-type="button" data-section="${section}" data-id="${index}">
                         <a href="#" class="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
                             <i class="inline-flex justify-center items-center ml-4 fas ${content[0]}"></i>
                             <span class="w-full ml-2 text-sm tracking-wide truncate">${content[1]}</span>
