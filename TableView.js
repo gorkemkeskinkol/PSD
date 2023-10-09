@@ -87,7 +87,7 @@
             });
     
             return `
-                <div id="settings" class="bg-gray-100">
+                <div id="settings" class="flex mb-8 bg-gray-100">
                     ${this.generate_settings([
                         [ 'Dropdown', {
                             name: 'Departments',
@@ -102,7 +102,7 @@
                         [ 'Slider', 'Range Slider', this.getSliderSteps()]
                     ])}
                 </div>
-                <div id="table" class="bg-gray-100">
+                <div id="table" class="flex bg-gray-100">
                     ${this.generate_table()}
                 </div>
             `
@@ -145,7 +145,7 @@
             var options = '';
             var component = {
                 'Dropdown': [this.dropdown, ' class="relative m-[2px] mb-3 mr-5 float-left"'],
-                'Slider': [this.slider, ' class="relative m-[2px] mb-3 ml-5 float-right w-[40%]"']
+                'Slider': [this.slider, ' class="relative m-[2px] mb-3 ml-5 float-right w-[40%] ml-auto"']
             }
             for (let i = 0; i < guide.length; i++) {
                 const receipt = guide[i]

@@ -7,229 +7,15 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@v1.0.9/Dashboard.js?nocache=1"></script> -->
-        <style>
-            body {
-                margin: 0; /* Kenarlardaki boşlukları kaldır */
-                padding: 0; /* Kenarlardaki boşlukları kaldır */
-                font-family: 'Lato', sans-serif; /* Lato fontunu kullan */
-                background-color: #1a2a6c; /* Pastel koyu lacivert arkaplan rengi */
-                color: #1a1e2e; /* Beyaz yazı rengi */
-            }
-            .noUi-value {
-                display: none;
-            }
-        </style>
     </head>
     <body>
         <div id="main_wrapper" class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800"></div>
         <script>
-            var data = {
-                    "years": [[2019],[2020],[2021],[2022],[2023]],
-                    "months": [["Ocak"],["Şubat"],["Mart"],["Nisan"],["Mayıs"],["Haziran"],["Temmuz"],["Ağustos"],["Eylül"],["Ekim"],["Kasım"],["Aralık"]],
-                    "roles": {
-                        "Producer": {
-                            "Kaan Tekin": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Plane Builder Run",
-                                            1.13,
-                                            22,
-                                            577.3
-                                        ],
-                                        [
-                                            "Doh Weapons",
-                                            0.76,
-                                            21.3,
-                                            ''
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Salih": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Pizza Bea",
-                                            2.21,
-                                            16.5,
-                                            705
-                                        ],
-                                        [
-                                            "Hide Colors",
-                                            2.37,
-                                            21.5,
-                                            525
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Ufuk": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Rocket Combine",
-                                            2.88,
-                                            15,
-                                            618
-                                        ],
-                                        [
-                                            "Master Sniper Run",
-                                            1.05,
-                                            19.3,
-                                            481.6
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        "Level Designer": {
-                            "Kaan Tekin": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Doh Weapons",
-                                            0.76,
-                                            21.3,
-                                            551
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Tarık": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Pizza Bea",
-                                            2.21,
-                                            16.5,
-                                            705
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Yalda": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Plane Builder Run",
-                                            1.13,
-                                            22,
-                                            577.3
-                                        ],
-                                        [
-                                            "Master Sniper Run",
-                                            1.05,
-                                            19.3,
-                                            481.6
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Duygu": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Rocket Combine",
-                                            2.88,
-                                            15,
-                                            618
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Alperen": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Hide Colors",
-                                            2.37,
-                                            21.5,
-                                            525
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        "Developer": {
-                            "Ufuk": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Rocket Combine",
-                                            2.88,
-                                            15,
-                                            618
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Cem": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Master Sniper Run",
-                                            1.05,
-                                            19.3,
-                                            481.6
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Ali Şensöz": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Plane Builder Run",
-                                            1.13,
-                                            22,
-                                            577.3
-                                        ],
-                                        [
-                                            "Doh Weapons",
-                                            0.76,
-                                            21.3,
-                                            551
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Mert": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Hide Colors",
-                                            2.37,
-                                            21.5,
-                                            525
-                                        ]
-                                    ]
-                                }
-                            },
-                            "Dev Alperen Uzun": {
-                                "2023": {
-                                    "Temmuz": [
-                                        [
-                                            "Pizza Bea",
-                                            2.21,
-                                            16.5,
-                                            705
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        "Art": {},
-                        "PM": {}
-                    }
-                }
-            
             var Dashboard = {
-                version: "v1.0.15",
-                files: ["TableView.js", "Sidebar.js"], // Sidebar must be at the end
+                version: "v1.0.16",
+                files: ["Slider", "TableView", "Sidebar"], // Sidebar must be at the end
                 url: function(file) {
-                    return `https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@${this.version}/${file}?nocache=1`
+                    return 'https://cdn.jsdelivr.net/gh/gorkemkeskinkol/PSD@' + this.version + '/' + file + '.js?nocache=1'
                 },
                 init: function(data) {
                     this.load_scripts(0, () => {
@@ -250,19 +36,17 @@
                 load_script: function(url, file, onSuccess) {
                     $.getScript(url)
                         .done((script, textStatus) => {
-                            console.log(`${file} loaded.`);
+                            console.log(file, 'loaded.');
                             onSuccess();
                         })
                         .fail((jqxhr, settings, exception) => {
-                            console.error(`An error occured while loading ${file}: ${exception}`);
+                            console.error('An error occured while loading', file, ': ', exception);
                         });
                 }
             }
 
-            Dashboard.init(data)
-            
             function setSysData(sys_data) {
-                // Dashboard.init(data)
+                Dashboard.init(sys_data)
                 console.log('data', data)
             }
         </script>
