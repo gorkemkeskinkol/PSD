@@ -69,7 +69,6 @@
                         $(`.customDropdownContent[data-bind="${bind}"] input[type="checkbox"]:checked`).each(function() {
                             self.settings[bind].push($(this).data('value'));
                         });
-                        console.log('----->', self.settings[bind])
                         $('.dropdown_button[data-bind="Members"]').text(`Members(${self.settings['Members'].length})`);
                     } else {
                         self.settings[bind] = $(this).data('value');
@@ -79,7 +78,6 @@
                         self.settings['members'] = self.dropdown_options(members_only, 'Members', true)
                         $('.dropdown_button[data-bind="Members"]').text(`Members(${members_only.length})`);
                         $('.customDropdownContent[data-bind="Members"]').html(self.settings['members'])
-                        console.log(members_only, members_only.length)
                     }
                     self.update_table();
                 });
@@ -108,7 +106,6 @@
             `
         },
         set_dates: function(range){
-            console.log('%%%%%', range)
             this.settings['date_range'] = range
             this.update_table()
         },
@@ -137,7 +134,6 @@
             return processed_html
         },
         update_table: function() {
-            console.log(this.settings['date_range'])
             $('#table').empty()
             $('#table').append(this.generate_table())
         },
@@ -228,9 +224,9 @@
             )
 
             return this.post_process(table, () => {
-                var rows = $('.tableWrapper tbody tr[data-id="row"]').get();
+                var rows = $('tr[data-id="row"]').get();
                 rows.reverse();
-                $('.tableWrapper tbody[data-id="rows"]').empty().append(rows)
+                $('tbody[data-id="rows"]').empty().append(rows)
             })
         },
         validate_entry: (p) => {
