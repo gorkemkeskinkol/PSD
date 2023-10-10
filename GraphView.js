@@ -15,81 +15,78 @@
             this.slider = this.slider.bind(this);
             this.rows = this.rows.bind(this);
 
-            $(document).ready(function() {
-                $(document.body).on('click', '.customDropdown', function(e) {
-                    e.preventDefault();
-                    const id = $(this).data('id');
-                    const bind = $(this).data('bind');
-                    var targetDropdownContent = $(`.customDropdownContent[data-bind="${bind}"][data-id="${id}"]`);
-                    if (targetDropdownContent.is(":hidden")) {
-                        targetDropdownContent.slideDown("fast");
-                    } else {
-                        targetDropdownContent.slideUp("fast");
-                    }
-                });
-
-                $(document.body).on('click', 'tr[data-id="row"][data-type="year"]', function(e) {
-                    var year = $(this).data('year');
-                    var month_rows = $(`tr[data-id="row"][data-type="month"][data-year="${year}"]`);
-                    var game_rows = $(`tr[data-id="row"][data-type="game"][data-year="${year}"]`);
-                    var svgElement = $(this).find('svg');
-
-                    var rows = month_rows.add(game_rows);
-
-                    if (rows.is(":hidden")) {
-                        rows.slideDown("fast");
-                        svgElement.removeClass('transform rotate-180');
-                        month_rows.each(function() {
-                            var month_svgElement = $(this).find('svg');
-                            month_svgElement.removeClass('transform rotate-180'); // Month SVG dönüşümünü geri al
-                        });
-                    } else {
-                        rows.slideUp("fast");
-                        svgElement.addClass('transform rotate-180');
-                    }
-                });
-
-                $(document.body).on('click', 'tr[data-id="row"][data-type="month"]', function(e) {
-                    var year = $(this).data('year');
-                    var month = $(this).data('month');
-                    var svgElement = $(this).find('svg');
-                    var rows = $(`tr[data-id="row"][data-type="game"][data-year="${year}"][data-month="${month}"]`)
-                    if (rows.is(":hidden")) {
-                        rows.slideDown("fast");
-                        svgElement.removeClass('transform rotate-180');
-                    } else {
-                        rows.slideUp("fast");
-                        svgElement.addClass('transform rotate-180');
-                    }
-                });
-
-                $(document.body).on('click', '.customDropdownItem', function(e) {
-                    const checkbox = $(this).data('checkbox');
-                    const bind = checkbox ? $(this).find('input').data('bind') : $(this).data('bind');
-                    if (checkbox) {
-                        self.settings[bind] = [];
-                        $(`.customDropdownContent[data-bind="${bind}"] input[type="checkbox"]:checked`).each(function() {
-                            self.settings[bind].push($(this).data('value'));
-                        });
-                        $('.dropdown_button[data-bind="Members"]').text(`Members(${self.settings['Members'].length})`);
-                    } else {
-                        self.settings[bind] = $(this).data('value');
-                        $(`.customDropdown[data-bind="${bind}"] .dropdown_button`).text(self.settings[bind]);
-                        const members_pack = self.raw_data['roles'][self.settings[bind]]
-                        const members_only = Object.keys(members_pack)
-                        self.settings['members'] = self.dropdown_options(members_only, 'Members', true)
-                        $('.dropdown_button[data-bind="Members"]').text(`Members(${members_only.length})`);
-                        $('.customDropdownContent[data-bind="Members"]').html(self.settings['members'])
-                    }
-                    self.update_table();
-                });
-
-                $(window).on('resize', function() {
-                    self.resizeCanvasToDiv();
-                });
-                
+            self.on(['click', '.customDropdown'], function(e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                const bind = $(this).data('bind');
+                var targetDropdownContent = $(`.customDropdownContent[data-bind="${bind}"][data-id="${id}"]`);
+                if (targetDropdownContent.is(":hidden")) {
+                    targetDropdownContent.slideDown("fast");
+                } else {
+                    targetDropdownContent.slideUp("fast");
+                }
             });
-    
+
+            self.on(['click', 'tr[data-id="row"][data-type="year"]'], function(e) {
+                var year = $(this).data('year');
+                var month_rows = $(`tr[data-id="row"][data-type="month"][data-year="${year}"]`);
+                var game_rows = $(`tr[data-id="row"][data-type="game"][data-year="${year}"]`);
+                var svgElement = $(this).find('svg');
+
+                var rows = month_rows.add(game_rows);
+
+                if (rows.is(":hidden")) {
+                    rows.slideDown("fast");
+                    svgElement.removeClass('transform rotate-180');
+                    month_rows.each(function() {
+                        var month_svgElement = $(this).find('svg');
+                        month_svgElement.removeClass('transform rotate-180'); // Month SVG dönüşümünü geri al
+                    });
+                } else {
+                    rows.slideUp("fast");
+                    svgElement.addClass('transform rotate-180');
+                }
+            });
+
+            self.on(['click', 'tr[data-id="row"][data-type="month"]'], function(e) {
+                var year = $(this).data('year');
+                var month = $(this).data('month');
+                var svgElement = $(this).find('svg');
+                var rows = $(`tr[data-id="row"][data-type="game"][data-year="${year}"][data-month="${month}"]`)
+                if (rows.is(":hidden")) {
+                    rows.slideDown("fast");
+                    svgElement.removeClass('transform rotate-180');
+                } else {
+                    rows.slideUp("fast");
+                    svgElement.addClass('transform rotate-180');
+                }
+            });
+
+            self.on(['click', '.customDropdownItem'], function(e) {
+                const checkbox = $(this).data('checkbox');
+                const bind = checkbox ? $(this).find('input').data('bind') : $(this).data('bind');
+                if (checkbox) {
+                    self.settings[bind] = [];
+                    $(`.customDropdownContent[data-bind="${bind}"] input[type="checkbox"]:checked`).each(function() {
+                        self.settings[bind].push($(this).data('value'));
+                    });
+                    $('.dropdown_button[data-bind="Members"]').text(`Members(${self.settings['Members'].length})`);
+                } else {
+                    self.settings[bind] = $(this).data('value');
+                    $(`.customDropdown[data-bind="${bind}"] .dropdown_button`).text(self.settings[bind]);
+                    const members_pack = self.raw_data['roles'][self.settings[bind]]
+                    const members_only = Object.keys(members_pack)
+                    self.settings['members'] = self.dropdown_options(members_only, 'Members', true)
+                    $('.dropdown_button[data-bind="Members"]').text(`Members(${members_only.length})`);
+                    $('.customDropdownContent[data-bind="Members"]').html(self.settings['members'])
+                }
+                self.update_table();
+            });
+
+            self.on(['resize'], function() {
+                self.resizeCanvasToDiv();
+            }, window);
+                
             return `
                 <div id="settings" class="flex mb-8 bg-gray-100">
                     ${this.generate_settings([
@@ -115,6 +112,11 @@
                     ${this.generate_table()}
                 </div>
             `
+        },
+        on: function(args, func, eventTarget = document.body) {
+            $(document).ready(function() {
+                $(eventTarget).off(...args).on(...args, func);
+            });
         },
         resizeCanvasToDiv: function() {
             $("canvas.graph_container").each(function() {
