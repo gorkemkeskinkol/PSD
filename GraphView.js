@@ -18,8 +18,9 @@
             $(document).ready(function() {
                 $(document.body).on('click', '.customDropdown', function(e) {
                     e.preventDefault();
-                    var bind = $(this).data('bind');
-                    var targetDropdownContent = $(`.customDropdownContent[data-bind="${bind}"]`);
+                    const id = $(this).data('id');
+                    const bind = $(this).data('bind');
+                    var targetDropdownContent = $(`.customDropdownContent[data-bind="${bind}"][data-id="${id}"]`);
                     if (targetDropdownContent.is(":hidden")) {
                         targetDropdownContent.slideDown("fast");
                     } else {
@@ -82,6 +83,10 @@
                     }
                     self.update_table();
                 });
+
+                $(window).on('resize', function() {
+                    self.resizeCanvasToDiv();
+                });
                 
             });
     
@@ -110,6 +115,15 @@
                     ${this.generate_table()}
                 </div>
             `
+        },
+        resizeCanvasToDiv: function() {
+            $("canvas.graph_container").each(function() {
+                var parentDiv = $(this).parent();
+                $(this).attr("width", parentDiv.width());
+                $(this).attr("width", '100%');
+                $(this).attr("height", parentDiv.height());
+                $(this).attr("height", '100%');
+            });
         },
         set_dates: function(range){
             this.settings['date_range'] = range
@@ -170,9 +184,10 @@
         },
         dropdown: function(guide, item){
             this.settings[guide.name] = guide.checkbox ? guide.data : guide.data[0]
+            const uid = this.uid()
             return `
                 <div class="relative inline-block text-left">
-                    <button data-bind="${guide.name}" type="button" class="customDropdown inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-transparent rounded-md hover:bg-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                    <button data-bind="${guide.name}" data-id="${uid}" type="button" class="customDropdown inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-transparent rounded-md hover:bg-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500" id="options-menu" aria-haspopup="true" aria-expanded="true">
                         <div class="dropdown_button" data-bind="${guide.name}">${guide.name}</div>
                         
                         <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -180,7 +195,7 @@
                         </svg>
                     </button>
                 </div>
-                <div data-bind="${guide.name}" data-checkbox="${guide.checkbox}" style="z-index: 50;" class="customDropdownContent hidden origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                <div data-bind="${guide.name}" data-checkbox="${guide.checkbox}" data-id="${uid}" style="z-index: 50;" class="customDropdownContent hidden origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                     ${this.dropdown_options(guide.data, guide.name, guide.checkbox)}
                 </div>
             `
@@ -386,7 +401,13 @@
                 labels: labels,
                 datasets: datasets
             };
-        },        
+        },  
+        uid: function() {
+            const timestamp = (Math.random() + performance.now()).toString();
+            const encoder = new TextEncoder();
+            const uint8Array = encoder.encode(timestamp);
+            return btoa(String.fromCharCode.apply(null, uint8Array));
+        },   
         rows: function() {
             const self = this;
             const display = ['Playtime', 'Retention', 'ECPI']
@@ -407,10 +428,7 @@
                 rows += self.row(kpi);
                 var row = '';
                 self.settings['Members'].forEach(member => {
-                    const timestamp = (Math.random() + performance.now()).toString();
-                    const encoder = new TextEncoder();
-                    const uint8Array = encoder.encode(timestamp);
-                    const base64Encoded = btoa(String.fromCharCode.apply(null, uint8Array));
+                    const base64Encoded = self.uid()
         
                     const extractedData = self.extractData(kpi);
                     const dataForGraph = self.transformDataForGraph(extractedData, member);
@@ -440,7 +458,7 @@
                         }
                     }])
                 });
-                rows += Dom.single('div', 'class="h-64 flex"', row);
+                rows += Dom.single('div', 'class="max-h-64 flex"', row);
             });
             return rows;
         }

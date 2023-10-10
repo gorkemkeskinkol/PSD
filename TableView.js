@@ -17,6 +17,7 @@
             $(document).ready(function() {
                 $(document.body).on('click', '.customDropdown', function(e) {
                     e.preventDefault();
+                    console.log('FIRE')
                     var bind = $(this).data('bind');
                     var targetDropdownContent = $(`.customDropdownContent[data-bind="${bind}"]`);
                     if (targetDropdownContent.is(":hidden")) {
