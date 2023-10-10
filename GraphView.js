@@ -434,7 +434,7 @@
         
                     const extractedData = self.extractData(kpi);
                     const dataForGraph = self.transformDataForGraph(extractedData, member);
-                    row += Dom.single('div', 'class="relative px-3 py-2 flex-grow"', `<canvas style="width: 100%; height: 100%;" class="graph_container flex-auto" data-id="${base64Encoded}"></canvas>`);
+                    row += Dom.single('div', 'class="relative px-3 py-2 flex-1"', `<canvas style="width: 100%; height: 100%;" class="graph_container flex-auto" data-id="${base64Encoded}"></canvas>`);
                     Graph.queue([base64Encoded, dataForGraph, {
                         responsive: true,
                         plugins: {
@@ -460,7 +460,8 @@
                         }
                     }])
                 });
-                rows += Dom.single('div', 'class="max-h-64 flex"', row);
+                const rowHeight = 400
+                rows += Dom.single('div', `class="min-h-[${rowHeight}px] max-h-[${rowHeight}px] flex"`, row);
             });
             return rows;
         }
